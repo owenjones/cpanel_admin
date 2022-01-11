@@ -29,6 +29,7 @@ class Account:
         self.domain = f"{ self.username }.{ server }"
 
     def generate_password(self) -> str:
+        # TODO: increase complexity as some usernames can cause generates password to be weak
         return self.username[0].upper() + self.username[1:] + "$$"
 
 
@@ -105,19 +106,24 @@ if __name__ == "__main__":
         "input", type=str, help="csv file to load input usernames and emails from"
     )
     parser.add_argument(
-        "-o",
         "--output",
+        "-o",
         action="store_true",
         help="save csv output for successful and unsuccessful account creations",
     )
     parser.add_argument(
-        "-p",
         "--plan",
+        "-p",
         type=str,
         default="default",
         help="the cPanel plan (package) to create the account with",
     )
-    parser.add_argument("-v", "--debug", action="store_true")
+    parser.add_argument(
+        "--debug",
+        "-v",
+        action="store_true",
+        help="print debug messages to the terminal",
+    )
     args = parser.parse_args()
 
     def debug(message: str):
