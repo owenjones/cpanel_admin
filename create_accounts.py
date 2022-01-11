@@ -120,20 +120,24 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--debug", action="store_true")
     args = parser.parse_args()
 
+    def debug(message: str):
+        if args.debug:
+            print(message)
+
     api = WHMAPI(os.getenv("WHMUSER"), os.getenv("WHMTOKEN"))
     accounts = load_accounts(args.input)
     successful = []
     unsuccessful = []
     asyncio.run(create_accounts(api, accounts, args.plan, successful, unsuccessful))
 
-    print(
+    debug(
         f"Run finished: { len(successful) } accounts created successfully under plan { args.plan }."
     )
 
-    if len(unsuccessful) > 0:
-        print(f"There was a problem creating { len(unsuccessful) } account(s):\n")
+    if len(unsuccessful) > 0 and args.debug:
+        debug(f"There was a problem creating { len(unsuccessful) } account(s):\n")
         for account, error in unsuccessful:
-            print(f"{ account.username } - { error }")
+            debug(f"{ account.username } - { error }")
 
     if args.output:
         if not os.path.exists("output"):
