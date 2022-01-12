@@ -25,6 +25,7 @@ async def fix_ssl(
     crt: str,
     key: str,
     cab: str,
+    redirect: bool,
     successful: list,
     unsuccessful: list,
 ):
@@ -43,13 +44,13 @@ async def fix_ssl(
                             status = await response.json(content_type="text/plain")
 
                             if status["data"]["uapi"]["status"] == 1:
-                                async with api.redirect_https(
-                                    session, domain
-                                ) as response:
-                                    status = await response.json(
-                                        content_type="text/plain"
-                                    )
-                                    # print(status)
+                                if redirect:
+                                    async with api.redirect_https(
+                                        session, domain
+                                    ) as response:
+                                        status = await response.json(
+                                            content_type="text/plain"
+                                        )
 
                                 successful.append(domain)
                             else:
@@ -81,6 +82,12 @@ if __name__ == "__main__":
         help="save csv output for successful and unsuccessful SSL certificate fixes",
     )
     parser.add_argument(
+        "--redirect",
+        "-r",
+        action="store_true",
+        help="enable http->https redirection on domains",
+    )
+    parser.add_argument(
         "--debug",
         "-v",
         action="store_true",
@@ -108,6 +115,7 @@ if __name__ == "__main__":
             os.getenv("SSLCRT"),
             os.getenv("SSLKEY"),
             os.getenv("SSLCAB"),
+            args.redirect,
             successful,
             unsuccessful,
         )
