@@ -5,68 +5,7 @@ import asyncio
 from dotenv import load_dotenv
 import aiohttp
 
-load_dotenv()
-server = os.getenv("WHMSERVER", "127.0.0.1")
-port = os.getenv("WHMPORT", "2087")
-
-
-class Account:
-    rawusername: str
-    username: str
-    email: str
-    password: str
-    domain: str
-
-    def __init__(self, username: str, email: str):
-        self.rawusername = username
-        self.username = username.replace("-", "")
-
-        if len(self.username) > 16:
-            raise Exception(f"Account username too long: { self.username }")
-
-        self.email = email.lower()
-        self.password = self.generate_password()
-        self.domain = f"{ self.username }.{ server }"
-
-    def generate_password(self) -> str:
-        # TODO: increase complexity as some usernames can cause generates password to be weak
-        return self.username[0].upper() + self.username[1:] + "$$"
-
-
-class WHMAPI:
-    username: str
-    token: str
-    version: int
-
-    def __init__(self, username: str, token: str, version: int = 1):
-        self.username = username
-        self.token = token
-        self.version = version
-
-    @staticmethod
-    def api_url(endpoint: str) -> str:
-        return f"https://{ server }:{ port }/json-api/{ endpoint }"
-
-    def _call(self, session: aiohttp.ClientSession, endpoint: str, params: list[tuple]):
-        url = WHMAPI.api_url(endpoint)
-        headers = {"Authorization": f"whm { self.username }:{ self.token }"}
-        params.append(("api.version", self.version))
-        return session.get(url, headers=headers, params=params)
-
-    def create_account(
-        self, session: aiohttp.ClientSession, account: Account, plan: str
-    ):
-        return self._call(
-            session,
-            "createacct",
-            [
-                ("domain", account.domain),
-                ("username", account.username),
-                ("password", account.password),
-                ("contactemail", account.email),
-                ("plan", plan),
-            ],
-        )
+from whmapi import Account, WHMAPI
 
 
 def load_accounts(file: str) -> list[Account]:
@@ -89,16 +28,21 @@ async def create_accounts(
 ):
     async with aiohttp.ClientSession() as session:
         for account in accounts:
-            async with api.create_account(session, account, plan) as response:
-                status = await response.json(content_type="text/plain")
+            try:
+                async with api.create_account(session, account, plan) as response:
+                    status = await response.json(content_type="text/plain")
 
-                if status["metadata"]["result"] == 1:
-                    successful.append(account)
-                else:
-                    unsuccessful.append((account, status["metadata"]["reason"]))
+                    if status["metadata"]["result"] == 1:
+                        successful.append(account)
+                    else:
+                        unsuccessful.append((account, status["metadata"]["reason"]))
+
+            except Exception as e:
+                unsuccessful.append((account, e))
 
 
 if __name__ == "__main__":
+    load_dotenv()
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="bulk add accounts to cPanel")
@@ -130,7 +74,12 @@ if __name__ == "__main__":
         if args.debug:
             print(message)
 
-    api = WHMAPI(os.getenv("WHMUSER"), os.getenv("WHMTOKEN"))
+    api = WHMAPI(
+        os.getenv("WHMSERVER", "127.0.0.1"),
+        os.getenv("WHMPORT", 2087),
+        os.getenv("WHMUSER"),
+        os.getenv("WHMTOKEN"),
+    )
     accounts = load_accounts(args.input)
     successful = []
     unsuccessful = []
