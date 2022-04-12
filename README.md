@@ -19,16 +19,16 @@ optional arguments:
 
 ## Update SSL Certificates
 ```
-usage: update_ssl.py [-h] [--output] [--redirect] [--debug] input
+usage: update_ssl.py [-h] [--redirect] [--debug] pem_file accounts_file
 
 bulk update SSL certificates on cPanel accounts
 
 positional arguments:
-  input           csv file to load usernames and domains from
+  pem_file        PEM file to load key and certificate(s) from
+  accounts_file   csv file to load accounts from (username and domain required)
 
 optional arguments:
   -h, --help      show this help message and exit
-  --output, -o    save csv output for successful and unsuccessful SSL certificate fixes
   --redirect, -r  enable http->https redirection on domains
   --debug, -v     print debug messages to the terminal
 ```
