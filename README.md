@@ -19,12 +19,12 @@ optional arguments:
 
 ## Update SSL Certificates
 ```
-usage: fix_ssl.py [-h] [--output] [--redirect] [--debug] input
+usage: update_ssl.py [-h] [--output] [--redirect] [--debug] input
 
-bulk fix SSL certificates on cPanel accounts
+bulk update SSL certificates on cPanel accounts
 
 positional arguments:
-  input           csv file to load domains from
+  input           csv file to load usernames and domains from
 
 optional arguments:
   -h, --help      show this help message and exit

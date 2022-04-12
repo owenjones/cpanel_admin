@@ -8,7 +8,7 @@ import aiohttp
 from whmapi import WHMAPI
 
 
-def load_domains(file: str) -> list[str]:
+def load_domains(file: str) -> list[dict]:
     domains = []
 
     with open(file) as input:
@@ -73,8 +73,12 @@ if __name__ == "__main__":
     load_dotenv()
     from argparse import ArgumentParser
 
-    parser = ArgumentParser(description="bulk fix SSL certificates on cPanel accounts")
-    parser.add_argument("input", type=str, help="csv file to load domains from")
+    parser = ArgumentParser(
+        description="bulk update SSL certificates on cPanel accounts"
+    )
+    parser.add_argument(
+        "input", type=str, help="csv file to load usernames and domains from"
+    )
     parser.add_argument(
         "--output",
         "-o",
