@@ -2,21 +2,26 @@ import os
 import csv
 import asyncio
 
-from dotenv import load_dotenv
 import aiohttp
+import pem
 
 from whmapi import WHMAPI
 
 
-def load_domains(file: str) -> list[dict]:
-    domains = []
+def load_accounts(file: str) -> list[dict]:
+    accounts = []
 
     with open(file) as input:
         rows = csv.DictReader(input)
         for row in rows:
-            domains.append({"username": row["username"], "domain": row["domain"]})
+            accounts.append({"username": row["username"], "domain": row["domain"]})
 
-    return domains
+    return accounts
+
+
+def load_certificate(file: str) -> dict:
+    p = pem.parse_file(file)
+    return {"key": p[0], "certificate": p[1], "chain": p[2:]}
 
 
 async def fix_ssl(
@@ -37,7 +42,7 @@ async def fix_ssl(
                 async with api.remove_certificate(session, domain) as response:
                     status = await response.json(content_type="text/plain")
 
-                    if status["metadata"]["result"] == 1:
+                    if "metadata" in status and status["metadata"]["result"] == 1:
                         async with api.add_certificate(
                             session, domain, crt, key, cab
                         ) as response:
@@ -61,29 +66,30 @@ async def fix_ssl(
                                     )
                                 )
                     else:
-                        unsuccessful.append(
-                            (domain["domain"], status["metadata"]["reason"])
-                        )
+                        unsuccessful.append((domain["domain"], status))
 
             except Exception as e:
                 unsuccessful.append((domain, e))
 
 
 if __name__ == "__main__":
-    load_dotenv()
+    import time
+
+    from dotenv import load_dotenv
     from argparse import ArgumentParser
+
+    load_dotenv()
 
     parser = ArgumentParser(
         description="bulk update SSL certificates on cPanel accounts"
     )
     parser.add_argument(
-        "input", type=str, help="csv file to load usernames and domains from"
+        "pem_file", type=str, help="PEM file to load key and certificate(s) from"
     )
     parser.add_argument(
-        "--output",
-        "-o",
-        action="store_true",
-        help="save csv output for successful and unsuccessful SSL certificate fixes",
+        "accounts_file",
+        type=str,
+        help="csv file to load accounts from (username and domain required)",
     )
     parser.add_argument(
         "--redirect",
@@ -109,16 +115,21 @@ if __name__ == "__main__":
         os.getenv("WHMUSER"),
         os.getenv("WHMTOKEN"),
     )
-    domains = load_domains(args.input)
+
+    domains = load_accounts(args.accounts_file)
+    p = load_certificate(args.pem_file)
+    chain = "".join(list(map(str, p["chain"])))
+
     successful = []
     unsuccessful = []
+
     asyncio.run(
         fix_ssl(
             api,
             domains,
-            os.getenv("SSLCRT"),
-            os.getenv("SSLKEY"),
-            os.getenv("SSLCAB"),
+            str(p["certificate"]),
+            str(p["key"]),
+            chain,
             args.redirect,
             successful,
             unsuccessful,
@@ -131,21 +142,22 @@ if __name__ == "__main__":
         debug(
             f"There was a problem fixing SSL certificates for { len(unsuccessful) } domains(s):\n"
         )
+
         for domain, error in unsuccessful:
             debug(f"{ domain } - { error }")
 
-    if args.output:
-        if not os.path.exists("output"):
-            os.makedirs("output")
+    if not os.path.exists("output"):
+        os.makedirs("output")
 
-        with open("output/successful_ssl.csv", "w") as output:
-            writer = csv.writer(output)
-            writer.writerow(["domain"])
-            for domain in successful:
-                writer.writerow([domain["domain"]])
+    t = int(time.time())
+    with open(f"output/update_{t}_successful.csv", "w") as output:
+        writer = csv.writer(output)
+        writer.writerow(["domain"])
+        for domain in successful:
+            writer.writerow([domain["domain"]])
 
-        with open("output/unsuccessful_ssl.csv", "w") as output:
-            writer = csv.writer(output)
-            writer.writerow(["domain", "error"])
-            for domain, error in unsuccessful:
-                writer.writerow([domain, error])
+    with open(f"output/update_{t}_unsuccessful.csv", "w") as output:
+        writer = csv.writer(output)
+        writer.writerow(["domain", "error"])
+        for domain, error in unsuccessful:
+            writer.writerow([domain, error])

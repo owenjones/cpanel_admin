@@ -1,3 +1,4 @@
 *.env
 *.csv
+*.pem
 __pycache__
