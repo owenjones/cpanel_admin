@@ -17,7 +17,7 @@ def load_domains(file: str) -> list[str]:
     return domains
 
 
-def get_SSL_expiry_date(domain: str) -> str:
+def get_SSL_expiry_date(domain: str) -> datetime:
     c = ssl.get_server_certificate((domain, 443))
     x = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, c)
     d = x.get_notAfter()
