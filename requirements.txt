@@ -2,9 +2,14 @@ aiohttp==3.8.1
 aiosignal==1.2.0
 async-timeout==4.0.2
 attrs==21.4.0
+cffi==1.15.0
 charset-normalizer==2.0.10
+cryptography==36.0.2
+enum-compat==0.0.3
 frozenlist==1.2.0
 idna==3.3
 multidict==5.2.0
+pycparser==2.21
+pyOpenSSL==22.0.0
 python-dotenv==0.19.2
 yarl==1.7.2

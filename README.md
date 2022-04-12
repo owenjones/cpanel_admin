@@ -1,5 +1,5 @@
-# cPanel Bulk Account Creation
-A quick utility script to bulk create cPanel accounts from a csv file.
+# cPanel Management
+A set of utility scripts to bulk manage cPanel accounts/domains.
 
 ## Create Accounts
 ```
@@ -16,7 +16,8 @@ optional arguments:
   --plan PLAN, -p PLAN  the cPanel plan (package) to create the account with
   --debug, -v           print debug messages to the terminal
 ```
-## Fix SSL Certificates
+
+## Update SSL Certificates
 ```
 usage: fix_ssl.py [-h] [--output] [--redirect] [--debug] input
 
@@ -31,3 +32,16 @@ optional arguments:
   --redirect, -r  enable http->https redirection on domains
   --debug, -v     print debug messages to the terminal
 ```
+
+## Check SSL certificate expiry dates
+```
+usage: ssl_expiry.py [-h] input
+
+Check SSL expiry date on domains in a csv file
+
+positional arguments:
+  input       csv file to load domains from
+
+optional arguments:
+  -h, --help  show this help message and exit
+  ```
