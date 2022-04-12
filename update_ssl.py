@@ -24,7 +24,7 @@ def load_certificate(file: str) -> dict:
     return {"key": p[0], "certificate": p[1], "chain": p[2:]}
 
 
-async def fix_ssl(
+async def update_ssl(
     api: WHMAPI,
     domains: list[dict],
     crt: str,
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     unsuccessful = []
 
     asyncio.run(
-        fix_ssl(
+        update_ssl(
             api,
             domains,
             str(p["certificate"]),
