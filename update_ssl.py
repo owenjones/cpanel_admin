@@ -116,6 +116,9 @@ if __name__ == "__main__":
         os.getenv("WHMTOKEN"),
     )
 
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
     domains = load_accounts(args.accounts_file)
     p = load_certificate(args.pem_file)
     chain = "".join(list(map(str, p["chain"])))
@@ -145,9 +148,6 @@ if __name__ == "__main__":
 
         for domain, error in unsuccessful:
             debug(f"{ domain } - { error }")
-
-    if not os.path.exists("output"):
-        os.makedirs("output")
 
     t = int(time.time())
     with open(f"output/update_{t}_successful.csv", "w") as output:

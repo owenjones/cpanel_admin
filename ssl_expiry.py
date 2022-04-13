@@ -34,12 +34,12 @@ if __name__ == "__main__":
     parser.add_argument("input", type=str, help="csv file to load domains from")
     args = parser.parse_args()
 
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
     domains = load_domains(args.input)
     dates = map(get_SSL_expiry_date, domains)
     expiry = dict(zip(domains, dates))
-
-    if not os.path.exists("output"):
-        os.makedirs("output")
 
     time = int(time.time())
     with open(f"output/sslexpiry_{time}.csv", "w") as output:

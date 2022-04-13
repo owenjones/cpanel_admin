@@ -50,12 +50,6 @@ if __name__ == "__main__":
         "input", type=str, help="csv file to load input usernames and emails from"
     )
     parser.add_argument(
-        "--output",
-        "-o",
-        action="store_true",
-        help="save csv output for successful and unsuccessful account creations",
-    )
-    parser.add_argument(
         "--plan",
         "-p",
         type=str,
@@ -80,6 +74,10 @@ if __name__ == "__main__":
         os.getenv("WHMUSER"),
         os.getenv("WHMTOKEN"),
     )
+
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
     accounts = load_accounts(args.input)
     successful = []
     unsuccessful = []
@@ -94,26 +92,22 @@ if __name__ == "__main__":
         for account, error in unsuccessful:
             debug(f"{ account.username } - { error }")
 
-    if args.output:
-        if not os.path.exists("output"):
-            os.makedirs("output")
+    with open("output/successful.csv", "w") as output:
+        writer = csv.writer(output)
+        writer.writerow(["uwe_username", "username", "password", "domain", "email"])
+        for account in successful:
+            writer.writerow(
+                [
+                    account.rawusername,
+                    account.username,
+                    account.password,
+                    account.domain,
+                    account.email,
+                ]
+            )
 
-        with open("output/successful.csv", "w") as output:
-            writer = csv.writer(output)
-            writer.writerow(["uwe_username", "username", "password", "domain", "email"])
-            for account in successful:
-                writer.writerow(
-                    [
-                        account.rawusername,
-                        account.username,
-                        account.password,
-                        account.domain,
-                        account.email,
-                    ]
-                )
-
-        with open("output/unsuccessful.csv", "w") as output:
-            writer = csv.writer(output)
-            writer.writerow(["username", "email", "error"])
-            for account, error in unsuccessful:
-                writer.writerow([account.username, account.email, error])
+    with open("output/unsuccessful.csv", "w") as output:
+        writer = csv.writer(output)
+        writer.writerow(["username", "email", "error"])
+        for account, error in unsuccessful:
+            writer.writerow([account.username, account.email, error])
