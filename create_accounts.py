@@ -1,8 +1,6 @@
-import os
 import csv
 import asyncio
 
-from dotenv import load_dotenv
 import aiohttp
 
 from whmapi import Account, WHMAPI
@@ -42,8 +40,13 @@ async def create_accounts(
 
 
 if __name__ == "__main__":
-    load_dotenv()
+    import os
+    import time
+
+    from dotenv import load_dotenv
     from argparse import ArgumentParser
+
+    load_dotenv()
 
     parser = ArgumentParser(description="bulk add accounts to cPanel")
     parser.add_argument(
