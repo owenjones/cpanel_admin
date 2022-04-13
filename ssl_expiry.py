@@ -41,8 +41,8 @@ if __name__ == "__main__":
     dates = map(get_SSL_expiry_date, domains)
     expiry = dict(zip(domains, dates))
 
-    time = int(time.time())
-    with open(f"output/sslexpiry_{time}.csv", "w") as output:
+    t = int(time.time())
+    with open(f"output/sslexpiry_{t}.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["domain", "expires"])
         for domain, expires in expiry.items():
