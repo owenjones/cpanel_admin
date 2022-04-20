@@ -1,6 +1,6 @@
 # SSL Certificate Update Procedure
 ## Prerequisites
-* Python dependencies installed `pip -r requirements.txt`
+* Python dependencies installed `pip install -r requirements.txt`
 * API key (root user, with full privileges) generated and saved in `.env`
 * New SSL certificate in PEM format saved in `sslupdate/cert.pem`
 * Test set of cPanel accounts (username and domain) saved in `sslupdate/testset.csv`
