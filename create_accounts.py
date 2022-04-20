@@ -96,7 +96,7 @@ if __name__ == "__main__":
             debug(f"{ account.username } - { error }")
 
     t = int(time.time())
-    with open(f"output/create_{t}_successful.csv", "w") as output:
+    with open(f"output/{t}_create_successful.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["uwe_username", "username", "password", "domain", "email"])
         for account in successful:
@@ -110,7 +110,7 @@ if __name__ == "__main__":
                 ]
             )
 
-    with open(f"output/create_{t}_unsuccessful.csv", "w") as output:
+    with open(f"output/{t}_create_unsuccessful.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["username", "email", "error"])
         for account, error in unsuccessful:

@@ -150,13 +150,13 @@ if __name__ == "__main__":
             debug(f"{ domain } - { error }")
 
     t = int(time.time())
-    with open(f"output/update_{t}_successful.csv", "w") as output:
+    with open(f"output/{t}_update_successful.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["domain"])
         for domain in successful:
             writer.writerow([domain["domain"]])
 
-    with open(f"output/update_{t}_unsuccessful.csv", "w") as output:
+    with open(f"output/{t}_update_unsuccessful.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["domain", "error"])
         for domain, error in unsuccessful:

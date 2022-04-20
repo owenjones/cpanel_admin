@@ -42,7 +42,7 @@ if __name__ == "__main__":
     expiry = dict(zip(domains, dates))
 
     t = int(time.time())
-    with open(f"output/sslexpiry_{t}.csv", "w") as output:
+    with open(f"output/{t}_sslexpiry.csv", "w") as output:
         writer = csv.writer(output)
         writer.writerow(["domain", "expires"])
         for domain, expires in expiry.items():
