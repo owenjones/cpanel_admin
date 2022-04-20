@@ -139,11 +139,11 @@ if __name__ == "__main__":
         )
     )
 
-    debug(f"Run finished: { len(successful) } SSL certificates fixed.")
+    debug(f"Run finished: { len(successful) } SSL certificates updated.")
 
     if len(unsuccessful) > 0 and args.debug:
         debug(
-            f"There was a problem fixing SSL certificates for { len(unsuccessful) } domains(s):\n"
+            f"There was a problem updating SSL certificates for { len(unsuccessful) } domains(s):\n"
         )
 
         for domain, error in unsuccessful:
