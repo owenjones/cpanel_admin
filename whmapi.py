@@ -25,7 +25,7 @@ class Account:
             self.username[0].upper()
             + self.username[1:-1]
             + self.username[-1].upper()
-            + len(self.username)
+            + str(len(self.username))
             + "$$"
         )
 
