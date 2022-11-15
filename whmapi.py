@@ -109,3 +109,13 @@ class WHMAPI:
             ("state", 1),
         ]
         return self._call(session, "uapi_cpanel", params)
+
+    def reset_password(self, session: aiohttp.ClientSession, account: Account):
+        return self._call(
+            session,
+            "passwd",
+            [
+                ("user", account.username),
+                ("password", account.password),
+            ],
+        )
