@@ -16,9 +16,7 @@ A set of utility scripts to bulk manage cPanel accounts/domains.
 4. Call required python script with csv file as input (e.g. `python create_accounts.py --debug --plan 2023_students new_accounts.csv`)
 5. Check csv files in output folder for successful/unsuccessful API calls
 
-
-## Command Line Arguments & csv File Spec
-### Create Accounts
+## Creating Accounts
 ```
 usage: create_accounts.py [-h] [--output] [--plan PLAN] [--debug] input
 
@@ -33,10 +31,14 @@ optional arguments:
   --debug, -v           print debug messages to the terminal
 ```
 
+### csv file spec
 | *username* | *email*                 |
 | ---------- | ----------------------- |
 | t1-test    | tom-test@live.uwe.ac.uk |
 | etc.                                 |
+
+## SSL functions
+*With the setup of AutoSSL in the server these should no longer be required--new accounts will automatically have SSL certificates generated*
 
 ### Update SSL Certificates
 ```
