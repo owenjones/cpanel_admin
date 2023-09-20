@@ -11,10 +11,10 @@ A set of utility scripts to bulk manage cPanel accounts/domains.
 
 ## Usage
 1. Set server details, username, and API token in `.env` file
-2. Setup CSV with user details
+2. Setup csv file with user details
 3. Call required python script with csv file as input
 
-## CSV file spec
+## csv file spec
 All commands take in a csv file with a header:
 * Creating accounts: `username` and `email` fields
 * Updating SSL certificates: `username` and `domain` fields
