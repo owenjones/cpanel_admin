@@ -28,7 +28,7 @@ async def create_accounts(
         for account in accounts:
             try:
                 async with api.create_account(session, account, plan) as response:
-                    status = await response.json(content_type="text/plain")
+                    status = await response.json(content_type="application/json")
 
                     if status["metadata"]["result"] == 1:
                         successful.append(account)
