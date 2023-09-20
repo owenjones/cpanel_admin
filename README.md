@@ -31,7 +31,6 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --output, -o          save csv output for successful and unsuccessful account creations
   --plan PLAN, -p PLAN  the cPanel plan (package) to create the account with
   --debug, -v           print debug messages to the terminal
 ```
