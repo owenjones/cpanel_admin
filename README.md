@@ -5,21 +5,19 @@ A set of utility scripts to bulk manage cPanel accounts/domains.
 ## Setup
 1. Install Python 3
 2. Install virtualenv `python -m pip install virtualenv`
-2. Create a new virtual environment `python -m virtualenv .venv`
-3. Activate the virtual environment `source .venv/bin/activate` (linux) `.venv\Scripts\activate.bat` (Windows)
-4. Install python packages `pip install -r requirements.txt`
+3. Create a new virtual environment `python -m virtualenv .venv`
+4. Activate the virtual environment `source .venv/bin/activate` (linux) `.venv\Scripts\activate.bat` (Windows)
+5. Install python packages `pip install -r requirements.txt`
 
 ## Usage
 1. Set server details, username, and API token in `.env` file
 2. Setup csv file with user details
-3. Call required python script with csv file as input
+3. Activate the virtual environment `source .venv/bin/activate` (linux) `.venv\Scripts\activate.bat` (Windows)
+4. Call required python script with csv file as input (e.g. `python create_accounts.py --debug --plan 2023_students new_accounts.csv`)
+5. Check csv files in output folder for successful/unsuccessful API calls
 
-## csv file spec
-All commands take in a csv file with a header:
-* Creating accounts: `username` and `email` fields
-* Updating SSL certificates: `username` and `domain` fields
 
-## Command Line Arguments
+## Command Line Arguments & csv File Spec
 ### Create Accounts
 ```
 usage: create_accounts.py [-h] [--output] [--plan PLAN] [--debug] input
@@ -34,6 +32,11 @@ optional arguments:
   --plan PLAN, -p PLAN  the cPanel plan (package) to create the account with
   --debug, -v           print debug messages to the terminal
 ```
+
+| *username* | *email*                 |
+| ---------- | ----------------------- |
+| t1-test    | tom-test@live.uwe.ac.uk |
+| etc.                                 |
 
 ### Update SSL Certificates
 ```
